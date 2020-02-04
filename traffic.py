@@ -1,27 +1,30 @@
 # Traffic
+from state import State
 
 
 initialStateA = [[' ', ' ', ' ', 'A', 'B', 'B'],
-                 [' ', ' ', ' ', 'A', 'C', 'C'].
+                 [' ', ' ', ' ', 'A', 'C', 'C'],
                  ['D', 'E', 'E', 'E', 'F', 'F'],
                  ['D', ' ', ' ', ' ', ' ', 'R'],
                  [' ', ' ', 'G', 'G', 'G', 'R'],
                  [' ', ' ', ' ', ' ', ' ', ' ']]
 
 initialStateB = [['A', 'B', 'C', 'D', 'D', 'D'],
-                 ['A', 'B', 'C', 'E', 'E', 'E'].
+                 ['A', 'B', 'C', 'E', 'E', 'E'],
                  ['A', 'B', 'F', 'F', 'G', 'G'],
                  ['H', 'H', ' ', ' ', 'R', ' '],
                  [' ', ' ', ' ', ' ', 'R', ' '],
                  [' ', ' ', 'I', 'I', ' ', ' ']]
 
 initialStateC = [[' ', ' ', 'A', 'B', 'B', 'B'],
-                 [' ', ' ', 'A', 'C', 'D', 'D'].
+                 [' ', ' ', 'A', 'C', 'D', 'D'],
                  [' ', 'E', 'A', 'C', ' ', 'R'],
                  ['G', 'E', 'F', 'F', 'F', 'R'],
                  ['G', 'E', ' ', 'H', 'H', 'H'],
                  ['G', ' ', ' ', ' ', ' ', ' ']]
 
+test = State(initialStateA, 3, 3)
+print(test.board)
 
 ####### Logic Order ########
 # 1. Pop from frontier, which is priority queue
