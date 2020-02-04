@@ -23,8 +23,86 @@ initialStateC = [[' ', ' ', 'A', 'B', 'B', 'B'],
                  ['G', 'E', ' ', 'H', 'H', 'H'],
                  ['G', ' ', ' ', ' ', ' ', ' ']]
 
-test = State(initialStateA, 3, 3)
-print(test.board)
+stateA = State(initialStateA, 5, 5)
+stateB = State(initialStateB, 4, 4)
+stateC = State(initialStateC, 5, 5)
+#print(test.board)
+#print(computeHeuristicOne(test))
+
+
+def computeHeuristicOne(newState):
+    blockingCarCount = 0
+    for i in range(0,5):       
+        if(newState.board[i][newState.doorColumn] == 'R'):
+            break
+        elif(newState.board[i][newState.doorColumn] != ' '):
+            blockingCarCount = blockingCarCount + 1
+    return blockingCarCount 
+            
+
+print(computeHeuristicOne(stateA))
+print(computeHeuristicOne(stateB))
+print(computeHeuristicOne(stateC))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ####### Logic Order ########
 # 1. Pop from frontier, which is priority queue
@@ -42,5 +120,5 @@ print(test.board)
 ####### Needed for state object ######
 # 1. 2d array of char
 # 2. column of door
-# 3. heuristic f(n) = 1 
+# 3. heuristic f(n)
 
