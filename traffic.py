@@ -24,9 +24,9 @@ initialStateC = [[' ', ' ', 'A', 'B', 'B', 'B'],
                  ['G', 'E', ' ', 'H', 'H', 'H'],
                  ['G', ' ', ' ', ' ', ' ', ' ']]
 
-stateA = State(initialStateA, -1, 5)
-stateB = State(initialStateB, -1, 4)
-stateC = State(initialStateC, -1, 5)
+stateA = State(initialStateA, -1, 5, None)
+stateB = State(initialStateB, -1, 4, None)
+stateC = State(initialStateC, -1, 5, None)
 
 
 def findPossibleStates(newState):
@@ -48,8 +48,8 @@ def findPossibleStates(newState):
                         else:
                             newBoard[i][j] = newBoard[i][j-1]
                             newBoard[i][j-2] = ' '
-                        newState = State(newBoard, 5, newState.doorColumn)
-                        listOfPossibleStates.append(newState)
+                        nextState = State(newBoard, 5, newState.doorColumn, newState)
+                        listOfPossibleStates.append(nextState)
 
                 # check if a vehicle can move left into this space
                 if(j < newState.numColumns - 2):
@@ -63,8 +63,8 @@ def findPossibleStates(newState):
                         else:
                             newBoard[i][j] = newBoard[i][j+1]
                             newBoard[i][j+2] = ' '
-                        newState = State(newBoard, 5, newState.doorColumn)
-                        listOfPossibleStates.append(newState)
+                        nextState = State(newBoard, 5, newState.doorColumn, newState)
+                        listOfPossibleStates.append(nextState)
     
                 # check if a vehicle can move down into this space
                 if(i > 1):
@@ -78,8 +78,8 @@ def findPossibleStates(newState):
                         else:
                             newBoard[i][j] = newBoard[i-1][j]
                             newBoard[i-2][j] = ' '
-                        newState = State(newBoard, 5, newState.doorColumn)
-                        listOfPossibleStates.append(newState)
+                        nextState = State(newBoard, 5, newState.doorColumn, newState)
+                        listOfPossibleStates.append(nextState)
 
                 # check if a vehicle can move up into this space
                 if(i < newState.numRows - 2):
@@ -93,8 +93,8 @@ def findPossibleStates(newState):
                         else:
                             newBoard[i][j] = newBoard[i+1][j]
                             newBoard[i+2][j] = ' '
-                        newState = State(newBoard, 5, newState.doorColumn)
-                        listOfPossibleStates.append(newState)
+                        nextState = State(newBoard, 5, newState.doorColumn, newState)
+                        listOfPossibleStates.append(nextState)
 
     
     for x in listOfPossibleStates:

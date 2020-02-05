@@ -5,14 +5,18 @@ class State():
     numRows = 0
     numColumns = 0
     doorColumn = 0
+    parentState = None
     # parent and child needed  STUB STuB stuB STUB
 
-    def __init__(self, board, fn, doorColumn):
+    def __init__(self, board, fn, doorColumn, parentState):
         self.board = board
         self.fn = fn
         self.doorColumn = doorColumn
         self.numRows = len(board)
         self.numColumns = len(board[0])
+        self.parentState = parentState
+        if(self.parentState != None):
+            self.gn = parentState.gn + 1
 
     
     def printBoard(self):
