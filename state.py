@@ -1,6 +1,9 @@
 class State():
     board = [[' ' * 6] * 6]
     fn = 0
+    gn = 0
+    numRows = 0
+    numColumns = 0
     doorColumn = 0
     # parent and child needed  STUB STuB stuB STUB
 
@@ -8,6 +11,8 @@ class State():
         self.board = board
         self.fn = fn
         self.doorColumn = doorColumn
+        self.numRows = len(board)
+        self.numColumns = len(board[0])
 
     
     def printBoard(self):
