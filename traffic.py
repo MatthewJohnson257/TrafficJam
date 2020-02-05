@@ -1,4 +1,5 @@
 # Traffic
+import copy
 from state import State
 
 
@@ -30,9 +31,88 @@ stateC = State(initialStateC, 5, 5)
 #print(computeHeuristicOne(test))
 
 
+def findPossibleStates(newState):
+    currentBoard = copy.deepcopy(newState.board)
+    listOfPossibleStates = []
+
+    for i in range(0,6):
+        for j in range(0,6):
+            if(currentBoard[i][j] == ' '):
+                # check if a vehicle can move right into this space
+                if(j > 1):
+                    if(currentBoard[i][j-1] != ' ' and (currentBoard[i][j-1] == currentBoard[i][j-2])):
+                        newBoard = copy.deepcopy(currentBoard)
+                        # for trucks
+                        if(j > 2 and currentBoard[i][j-1] == currentBoard[i][j-3]):
+                            newBoard[i][j] = newBoard[i][j-1]
+                            newBoard[i][j-3] = ' '
+                        # for cars
+                        else:
+                            newBoard[i][j] = newBoard[i][j-1]
+                            newBoard[i][j-2] = ' '
+                        listOfPossibleStates.append(createNewState(newBoard, 5)) ## CHANGE COLUMN VALUE LATER
+
+                # check if a vehicle can move left into this space
+                if(j < 4):
+                    if(currentBoard[i][j+1] != ' ' and (currentBoard[i][j+1] == currentBoard[i][j+2])):
+                        newBoard = copy.deepcopy(currentBoard)
+                        # for trucks
+                        if(j < 3 and currentBoard[i][j+1] == currentBoard[i][j+3]):
+                            newBoard[i][j] = newBoard[i][j+1]
+                            newBoard[i][j+3] = ' '
+                        # for cars
+                        else:
+                            newBoard[i][j] = newBoard[i][j+1]
+                            newBoard[i][j+2] = ' '
+                        listOfPossibleStates.append(createNewState(newBoard, 5)) ## CHANGE COLUMN VALUE LATER
+    
+                # check if a vehicle can move down into this space
+                if(i > 1):
+                    if(currentBoard[i-1][j] != ' ' and (currentBoard[i-1][j] == currentBoard[i-2][j])):
+                        newBoard = copy.deepcopy(currentBoard)
+                        # for trucks
+                        if(i > 2 and currentBoard[i-1][j] == currentBoard[i-3][j]):
+                            newBoard[i][j] = newBoard[i-1][j]
+                            newBoard[i-3][j] = ' '
+                        # for cars
+                        else:
+                            newBoard[i][j] = newBoard[i-1][j]
+                            newBoard[i-2][j] = ' '
+                        listOfPossibleStates.append(createNewState(newBoard, 5)) ## CHANGE COLUMN VALUE LATER
+
+                # check if a vehicle can move up into this space
+                if(i < 4):
+                    if(currentBoard[i+1][j] != ' ' and (currentBoard[i+1][j] == currentBoard[i+2][j])):
+                        newBoard = copy.deepcopy(currentBoard)
+                        # for trucks
+                        if(i < 3 and currentBoard[i+1][j] == currentBoard[i+3][j]):
+                            newBoard[i][j] = newBoard[i+1][j]
+                            newBoard[i+3][j] = ' '
+                        # for cars
+                        else:
+                            newBoard[i][j] = newBoard[i+1][j]
+                            newBoard[i+2][j] = ' '
+                        listOfPossibleStates.append(createNewState(newBoard, 5)) ## CHANGE COLUMN VALUE LATER
+
+    
+    for x in listOfPossibleStates:
+        print("-----------------------")
+        print("length: ", len(listOfPossibleStates))
+        x.printBoard()
+        print("-----------------------")
+
+    return(listOfPossibleStates)
+
+
+def createNewState(newBoard, doorColumn):
+    tempBoard = copy.deepcopy(newBoard)
+    newState = State(tempBoard, 5, doorColumn) ###### IMPORTANT, HEURISTIC NOT IMPLEMENTED COME BACK AND CHANGE THIS LINE
+    return(newState)
+    
+
 def computeHeuristicOne(newState):
     blockingCarCount = 0
-    for i in range(0,5):       
+    for i in range(0,6):       
         if(newState.board[i][newState.doorColumn] == 'R'):
             break
         elif(newState.board[i][newState.doorColumn] != ' '):
@@ -40,10 +120,11 @@ def computeHeuristicOne(newState):
     return blockingCarCount 
             
 
-print(computeHeuristicOne(stateA))
-print(computeHeuristicOne(stateB))
-print(computeHeuristicOne(stateC))
+#print(computeHeuristicOne(stateA))
+#print(computeHeuristicOne(stateB))
+#print(computeHeuristicOne(stateC))
 
+findPossibleStates(stateC)
 
 
 

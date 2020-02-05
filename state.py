@@ -10,3 +10,8 @@ class State():
         self.doorColumn = doorColumn
 
     
+    def printBoard(self):
+        for i in range(0,6):
+            print(self.board[i][0], ' ', self.board[i][1], ' ',
+                  self.board[i][2], ' ', self.board[i][3], ' ',
+                  self.board[i][4], ' ', self.board[i][5], ' ')
