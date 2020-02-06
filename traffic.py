@@ -194,6 +194,9 @@ stateA = State(initialStateA, -1, 5, None)
 stateB = State(initialStateB, -1, 4, None)
 stateC = State(initialStateC, -1, 5, None)
 
+listOfVisitedStates = []
+
+
 #print(computeHeuristicOne(stateA))
 #print(computeHeuristicOne(stateB))
 #print(computeHeuristicOne(stateC))
