@@ -6,6 +6,7 @@
 ###############################################################################
 import copy
 import argparse
+import sys
 from state import State
 from PriorityQueue import PriorityQueue
 
@@ -35,8 +36,10 @@ def findPossibleStates(newState):
                             newBoard[i][j] = newBoard[i][j-1]
                             newBoard[i][j-2] = ' '
                         nextState = State(newBoard, -50, newState.doorColumn, newState)
-                        # nextState.hn = computeHeuristicOne(nextState)
-                        nextState.hn = computeHeuristicTwo(nextState)
+                        if(usedHeuristic == 1):
+                            nextState.hn = computeHeuristicOne(nextState)
+                        else:
+                            nextState.hn = computeHeuristicTwo(nextState)
                         nextState.fn = nextState.gn + nextState.hn
                         if(hashState(nextState) != False):
                             listOfPossibleStates.append(nextState)
@@ -54,8 +57,10 @@ def findPossibleStates(newState):
                             newBoard[i][j] = newBoard[i][j+1]
                             newBoard[i][j+2] = ' '
                         nextState = State(newBoard, -50, newState.doorColumn, newState)
-                        # nextState.hn = computeHeuristicOne(nextState)
-                        nextState.hn = computeHeuristicTwo(nextState)
+                        if(usedHeuristic == 1):
+                            nextState.hn = computeHeuristicOne(nextState)
+                        else:
+                            nextState.hn = computeHeuristicTwo(nextState)
                         nextState.fn = nextState.gn + nextState.hn
                         if(hashState(nextState) != False):
                             listOfPossibleStates.append(nextState)
@@ -73,8 +78,10 @@ def findPossibleStates(newState):
                             newBoard[i][j] = newBoard[i-1][j]
                             newBoard[i-2][j] = ' '
                         nextState = State(newBoard, -50, newState.doorColumn, newState)
-                        # nextState.hn = computeHeuristicOne(nextState)
-                        nextState.hn = computeHeuristicTwo(nextState)
+                        if(usedHeuristic == 1):
+                            nextState.hn = computeHeuristicOne(nextState)
+                        else:
+                            nextState.hn = computeHeuristicTwo(nextState)
                         nextState.fn = nextState.gn + nextState.hn
                         if(hashState(nextState) != False):
                             listOfPossibleStates.append(nextState)
@@ -92,18 +99,14 @@ def findPossibleStates(newState):
                             newBoard[i][j] = newBoard[i+1][j]
                             newBoard[i+2][j] = ' '
                         nextState = State(newBoard, -50, newState.doorColumn, newState)
-                        # nextState.hn = computeHeuristicOne(nextState)
-                        nextState.hn = computeHeuristicTwo(nextState)
+                        if(usedHeuristic == 1):
+                            nextState.hn = computeHeuristicOne(nextState)
+                        else:
+                            nextState.hn = computeHeuristicTwo(nextState)
                         nextState.fn = nextState.gn + nextState.hn
                         if(hashState(nextState) != False):
                             listOfPossibleStates.append(nextState)
 
-    
-    # for x in listOfPossibleStates:
-    #     print("-----------------------")
-    #     print("length: ", len(listOfPossibleStates))
-    #     x.printBoard()
-    #     print("-----------------------")
 
     return(listOfPossibleStates)
 
@@ -224,14 +227,17 @@ def hashState(currentState):
     tempString = tempString + '.'
     tempString2 = tempString2 + '.'
 
+    # if the state has already been visited
     if (tempString in listOfVisitedStates or tempString2 in listOfVisitedStates):
-        #print("Already Visited")
         return(False)
     else:
         listOfVisitedStates.append(tempString)
-    # print(tempString)
 
 
+###############################################################################
+#
+#
+###############################################################################
 def printPath(goalState):
     path = [goalState]
     tempState = goalState
@@ -252,6 +258,21 @@ def printPath(goalState):
 #                                Global Scope                                 #
 #                                                                             #
 ###############################################################################
+
+parser = argparse.ArgumentParser()
+parser.add_argument('Arguments', metavar='N', type=int, nargs='+')
+arguments = parser.parse_args()
+
+if(len(arguments.Arguments) != 2):
+    sys.exit("    Error: Incorrect number of command line arguments supplied; 2 needed")
+if(arguments.Arguments[0] < 1 or arguments.Arguments[0] > 3):
+    sys.exit("    Error: Invalid value for first command line argument; must be in range(1,3)")
+if(arguments.Arguments[1] < 1 or arguments.Arguments[1] > 2):
+    sys.exit("    Error: Invalid value for second command line argument; must be in range(1,2)")
+
+usedPuzzle = arguments.Arguments[0]
+usedHeuristic = arguments.Arguments[1]
+
 
 
 initialStateA = [[' ', ' ', ' ', 'A', 'B', 'B'],
@@ -281,29 +302,27 @@ stateC = State(initialStateC, 2, 5, None)
 
 listOfVisitedStates = []
 
-
-#print(computeHeuristicOne(stateA))
-#print(computeHeuristicOne(stateB))
-#print(computeHeuristicOne(stateC))
-
-# listyList = findPossibleStates(stateA)
-# for x in listyList:
-#     findPossibleStates(x)
-#     pq.add_state(stateA, 5)
-
 pq = PriorityQueue()
 
 statesTested = 0
 
-pq.add_state(stateC, 2)
+
+
+if(usedPuzzle == 1):
+    pq.add_state(stateA, 3)
+elif(usedPuzzle == 2):
+    pq.add_state(stateB, 3)
+elif(usedPuzzle == 3):
+    pq.add_state(stateC, 2)
+
 goalNotReached = False
 while (not goalNotReached):
     poppedState = pq.pop_state()
     statesTested = statesTested + 1
     goalNotReached = checkGoalTest(poppedState)
     if(goalNotReached):
-        print("Total path cost: ",poppedState.fn)
         printPath(poppedState)
+        print("Total path cost: ",poppedState.fn)
         print("Number of states tested: ",statesTested)
         break
     newList = findPossibleStates(poppedState)

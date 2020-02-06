@@ -1,11 +1,13 @@
 import itertools  
 import heapq
+import copy
 
 class PriorityQueue():
     pq = []                         # list of entries arranged in a heap
     entry_finder = {}               # mapping of tasks to entries
     REMOVED = '<removed-state>'      # placeholder for a removed task
     counter = itertools.count()     # unique sequence count
+    listOfVisited = []
 
     def __init__(self):
         self.pq = []
@@ -30,11 +32,28 @@ class PriorityQueue():
         entry = self.entry_finder.pop(state)
         entry[-1] = self.REMOVED
 
+    def hashState(self, currentState):
+        tempBoard = copy.deepcopy(currentState.board)
+        tempString = ""
+        for i in range(0, len(tempBoard)):
+            for j in range(0, len(tempBoard[0])):
+                tempString = tempString + tempBoard[i][j]
+        tempString = tempString + '.'
+
+        if(tempString in self.listOfVisited):
+            return(False)
+        else:
+            self.listOfVisited.append(tempString)
+            return(True)
+
     def pop_state(self):
         #Remove and return the lowest priority state. Raise KeyError if empty.
         while self.pq:
             priority, count, state = heapq.heappop(self.pq)
             if state is not self.REMOVED:
                 del self.entry_finder[state]
-                return state
+                if(self.hashState(state) != False):
+                    return state
+                else:
+                    return self.pop_state()
         raise KeyError('pop from an empty priority queue')
