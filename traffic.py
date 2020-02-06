@@ -1,7 +1,7 @@
 ###############################################################################
 #
-# 
-#
+# Main file of the program.  Will process input, and run A* algorithm to find
+# optimal solution to the traffic puzzle.
 #
 ###############################################################################
 import copy             # used to copy state objects

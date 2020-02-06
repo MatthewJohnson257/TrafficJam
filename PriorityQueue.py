@@ -1,3 +1,10 @@
+###############################################################################
+#
+# Implementation of a priority queue in Python; used to determine next visited
+# node/State in for the traffic puzzle
+#
+###############################################################################
+
 import itertools  
 import heapq
 import copy
