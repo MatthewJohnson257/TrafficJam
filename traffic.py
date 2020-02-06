@@ -1,28 +1,30 @@
 ###############################################################################
 #
-# traffic.py
+# 
 #
 #
 ###############################################################################
-import copy
-import argparse
-import sys
+import copy             # used to copy state objects
+import argparse         # used to process comand line inputs
+import sys              # used to print error messages
 from state import State
 from PriorityQueue import PriorityQueue
 
 
 
 ###############################################################################
-#
-#
+# Given a state object, search for all possible states reachable from that 
+# state through a single action.  Filter out states that have been visited
+# before, then return a list of the reachable states.
 ###############################################################################
 def findPossibleStates(newState):
     currentBoard = copy.deepcopy(newState.board)
-    listOfPossibleStates = []
+    listOfPossibleStates = []    # list of reachable states
 
     for i in range(0,newState.numRows):
         for j in range(0,newState.numColumns):
             if(currentBoard[i][j] == ' '):
+
                 # check if a vehicle can move right into this space
                 if(j > 1):
                     if(currentBoard[i][j-1] != ' ' and (currentBoard[i][j-1] == currentBoard[i][j-2])):
@@ -36,11 +38,15 @@ def findPossibleStates(newState):
                             newBoard[i][j] = newBoard[i][j-1]
                             newBoard[i][j-2] = ' '
                         nextState = State(newBoard, -50, newState.doorColumn, newState)
+
+                        # calculate heuristic values
                         if(usedHeuristic == 1):
                             nextState.hn = computeHeuristicOne(nextState)
                         else:
                             nextState.hn = computeHeuristicTwo(nextState)
                         nextState.fn = nextState.gn + nextState.hn
+
+                        # check if state already visited
                         if(hashState(nextState) != False):
                             listOfPossibleStates.append(nextState)
 
@@ -57,11 +63,15 @@ def findPossibleStates(newState):
                             newBoard[i][j] = newBoard[i][j+1]
                             newBoard[i][j+2] = ' '
                         nextState = State(newBoard, -50, newState.doorColumn, newState)
+
+                        # calculate heuristic values
                         if(usedHeuristic == 1):
                             nextState.hn = computeHeuristicOne(nextState)
                         else:
                             nextState.hn = computeHeuristicTwo(nextState)
                         nextState.fn = nextState.gn + nextState.hn
+
+                        # check if state already visited
                         if(hashState(nextState) != False):
                             listOfPossibleStates.append(nextState)
     
@@ -78,11 +88,15 @@ def findPossibleStates(newState):
                             newBoard[i][j] = newBoard[i-1][j]
                             newBoard[i-2][j] = ' '
                         nextState = State(newBoard, -50, newState.doorColumn, newState)
+
+                        # calculate heuristic values
                         if(usedHeuristic == 1):
                             nextState.hn = computeHeuristicOne(nextState)
                         else:
                             nextState.hn = computeHeuristicTwo(nextState)
                         nextState.fn = nextState.gn + nextState.hn
+
+                        # check if state already visited
                         if(hashState(nextState) != False):
                             listOfPossibleStates.append(nextState)
 
@@ -99,25 +113,29 @@ def findPossibleStates(newState):
                             newBoard[i][j] = newBoard[i+1][j]
                             newBoard[i+2][j] = ' '
                         nextState = State(newBoard, -50, newState.doorColumn, newState)
+
+                        # calculate heuristic values
                         if(usedHeuristic == 1):
                             nextState.hn = computeHeuristicOne(nextState)
                         else:
                             nextState.hn = computeHeuristicTwo(nextState)
                         nextState.fn = nextState.gn + nextState.hn
+
+                        # check if state already visited
                         if(hashState(nextState) != False):
                             listOfPossibleStates.append(nextState)
-
 
     return(listOfPossibleStates)
 
 
     
 ###############################################################################
-#
-#
+# Given a state, compute the heuristic h(n) value using the first heuristic   
+# strategy, which counts the number of cars between the red car and the exit
+# Return this int value 
 ###############################################################################
 def computeHeuristicOne(newState):
-    blockingCarCount = 0
+    blockingCarCount = 0            # number of cars blocking the exit
     for i in range(0,newState.numColumns):       
         if(newState.board[i][newState.doorColumn] == 'R'):
             break
@@ -129,8 +147,8 @@ def computeHeuristicOne(newState):
 
 
 ###############################################################################
-#
-#
+# Given a state, compute the heuristic h(n) value using the second heuristic
+# strategy, returning this int value
 ###############################################################################
 def computeHeuristicTwo(newState):
     blockingCarCount = 0
