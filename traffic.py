@@ -32,7 +32,9 @@ def findPossibleStates(newState):
                         else:
                             newBoard[i][j] = newBoard[i][j-1]
                             newBoard[i][j-2] = ' '
-                        nextState = State(newBoard, 5, newState.doorColumn, newState)
+                        nextState = State(newBoard, -50, newState.doorColumn, newState)
+                        nextState.hn = computeHeuristicOne(nextState)
+                        nextState.fn = nextState.gn + nextState.hn
                         if(hashState(nextState) != False):
                             listOfPossibleStates.append(nextState)
 
@@ -48,7 +50,9 @@ def findPossibleStates(newState):
                         else:
                             newBoard[i][j] = newBoard[i][j+1]
                             newBoard[i][j+2] = ' '
-                        nextState = State(newBoard, 5, newState.doorColumn, newState)
+                        nextState = State(newBoard, -50, newState.doorColumn, newState)
+                        nextState.hn = computeHeuristicOne(nextState)
+                        nextState.fn = nextState.gn + nextState.hn
                         if(hashState(nextState) != False):
                             listOfPossibleStates.append(nextState)
     
@@ -64,7 +68,9 @@ def findPossibleStates(newState):
                         else:
                             newBoard[i][j] = newBoard[i-1][j]
                             newBoard[i-2][j] = ' '
-                        nextState = State(newBoard, 5, newState.doorColumn, newState)
+                        nextState = State(newBoard, -50, newState.doorColumn, newState)
+                        nextState.hn = computeHeuristicOne(nextState)
+                        nextState.fn = nextState.gn + nextState.hn
                         if(hashState(nextState) != False):
                             listOfPossibleStates.append(nextState)
 
@@ -80,7 +86,9 @@ def findPossibleStates(newState):
                         else:
                             newBoard[i][j] = newBoard[i+1][j]
                             newBoard[i+2][j] = ' '
-                        nextState = State(newBoard, 5, newState.doorColumn, newState)
+                        nextState = State(newBoard, -50, newState.doorColumn, newState)
+                        nextState.hn = computeHeuristicOne(nextState)
+                        nextState.fn = nextState.gn + nextState.hn
                         if(hashState(nextState) != False):
                             listOfPossibleStates.append(nextState)
 
@@ -129,13 +137,14 @@ def checkGoalTest(currentState):
 ###############################################################################
 def hashState(currentState):
     tempBoard = copy.deepcopy(currentState.board)
-    print(tempBoard)
+    # print(tempBoard)
     tempString = ""
     for i in range(0, len(tempBoard)):
         for j in range(0, len(tempBoard[0])):
             tempString = tempString + tempBoard[i][j]
     tempString = tempString + str(currentState.fn)
     tempString = tempString + str(currentState.gn)
+    tempString = tempString + str(currentState.hn)
     tempString = tempString + '.'
 
     if (tempString in listOfVisitedStates):
@@ -175,9 +184,9 @@ initialStateC = [[' ', ' ', 'A', 'B', 'B', 'B'],
                  ['G', 'E', ' ', 'H', 'H', 'H'],
                  ['G', ' ', ' ', ' ', ' ', ' ']]
 
-stateA = State(initialStateA, -1, 5, None)
-stateB = State(initialStateB, -1, 4, None)
-stateC = State(initialStateC, -1, 5, None)
+stateA = State(initialStateA, 3, 5, None)
+stateB = State(initialStateB, 3, 4, None)
+stateC = State(initialStateC, 2, 5, None)
 
 listOfVisitedStates = []
 
@@ -186,11 +195,10 @@ listOfVisitedStates = []
 #print(computeHeuristicOne(stateB))
 #print(computeHeuristicOne(stateC))
 
-listyList = findPossibleStates(stateC)
+listyList = findPossibleStates(stateA)
 for x in listyList:
     findPossibleStates(x)
 
-hashState(stateC)
 
 
 
