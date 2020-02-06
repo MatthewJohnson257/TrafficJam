@@ -58,7 +58,8 @@ def findPossibleStates(newState):
                             newBoard[i][j] = newBoard[i][j-1]
                             newBoard[i][j-2] = ' '
                         nextState = State(newBoard, 5, newState.doorColumn, newState)
-                        listOfPossibleStates.append(nextState)
+                        if(hashState(nextState) != False):
+                            listOfPossibleStates.append(nextState)
 
                 # check if a vehicle can move left into this space
                 if(j < newState.numColumns - 2):
@@ -73,7 +74,8 @@ def findPossibleStates(newState):
                             newBoard[i][j] = newBoard[i][j+1]
                             newBoard[i][j+2] = ' '
                         nextState = State(newBoard, 5, newState.doorColumn, newState)
-                        listOfPossibleStates.append(nextState)
+                        if(hashState(nextState) != False):
+                            listOfPossibleStates.append(nextState)
     
                 # check if a vehicle can move down into this space
                 if(i > 1):
@@ -88,7 +90,8 @@ def findPossibleStates(newState):
                             newBoard[i][j] = newBoard[i-1][j]
                             newBoard[i-2][j] = ' '
                         nextState = State(newBoard, 5, newState.doorColumn, newState)
-                        listOfPossibleStates.append(nextState)
+                        if(hashState(nextState) != False):
+                            listOfPossibleStates.append(nextState)
 
                 # check if a vehicle can move up into this space
                 if(i < newState.numRows - 2):
@@ -103,7 +106,8 @@ def findPossibleStates(newState):
                             newBoard[i][j] = newBoard[i+1][j]
                             newBoard[i+2][j] = ' '
                         nextState = State(newBoard, 5, newState.doorColumn, newState)
-                        listOfPossibleStates.append(nextState)
+                        if(hashState(nextState) != False):
+                            listOfPossibleStates.append(nextState)
 
     
     for x in listOfPossibleStates:
@@ -155,10 +159,16 @@ def hashState(currentState):
     for i in range(0, len(tempBoard)):
         for j in range(0, len(tempBoard[0])):
             tempString = tempString + tempBoard[i][j]
+    tempString = tempString + str(currentState.fn)
+    tempString = tempString + str(currentState.gn)
     tempString = tempString + '.'
+
+    if (tempString in listOfVisitedStates):
+        print("Already Visited")
+        return(False)
+    else:
+        listOfVisitedStates.append(tempString)
     print(tempString)
-
-
 
 
 
@@ -201,15 +211,11 @@ listOfVisitedStates = []
 #print(computeHeuristicOne(stateB))
 #print(computeHeuristicOne(stateC))
 
-findPossibleStates(stateC)
+listyList = findPossibleStates(stateC)
+for x in listyList:
+    findPossibleStates(x)
 
 hashState(stateC)
-
-
-
-
-
-
 
 
 
