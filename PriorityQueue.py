@@ -15,13 +15,10 @@ class PriorityQueue():
 
 
     def add_state(self, state, priority=0):
-        'Add a new state or update the priority of an existing state'
+        #Add a new state or update the priority of an existing state
         if state in self.entry_finder:
-            print("Here")
             if(state.fn <= priority):
-                print("AHHHHHH")
                 return
-            print("OHHHHHH")
             self.remove_state(state)
         count = next(self.counter)
         entry = [priority, count, state]
@@ -29,12 +26,12 @@ class PriorityQueue():
         heapq.heappush(self.pq, entry)
 
     def remove_state(self, state):
-        'Mark an existing state as REMOVED.  Raise KeyError if not found.'
+        #Mark an existing state as REMOVED.  Raise KeyError if not found.
         entry = self.entry_finder.pop(state)
         entry[-1] = self.REMOVED
 
     def pop_state(self):
-        'Remove and return the lowest priority state. Raise KeyError if empty.'
+        #Remove and return the lowest priority state. Raise KeyError if empty.
         while self.pq:
             priority, count, state = heapq.heappop(self.pq)
             if state is not self.REMOVED:

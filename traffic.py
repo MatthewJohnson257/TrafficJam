@@ -34,7 +34,8 @@ def findPossibleStates(newState):
                             newBoard[i][j] = newBoard[i][j-1]
                             newBoard[i][j-2] = ' '
                         nextState = State(newBoard, -50, newState.doorColumn, newState)
-                        nextState.hn = computeHeuristicOne(nextState)
+                        # nextState.hn = computeHeuristicOne(nextState)
+                        nextState.hn = computeHeuristicTwo(nextState)
                         nextState.fn = nextState.gn + nextState.hn
                         if(hashState(nextState) != False):
                             listOfPossibleStates.append(nextState)
@@ -52,7 +53,8 @@ def findPossibleStates(newState):
                             newBoard[i][j] = newBoard[i][j+1]
                             newBoard[i][j+2] = ' '
                         nextState = State(newBoard, -50, newState.doorColumn, newState)
-                        nextState.hn = computeHeuristicOne(nextState)
+                        # nextState.hn = computeHeuristicOne(nextState)
+                        nextState.hn = computeHeuristicTwo(nextState)
                         nextState.fn = nextState.gn + nextState.hn
                         if(hashState(nextState) != False):
                             listOfPossibleStates.append(nextState)
@@ -70,7 +72,8 @@ def findPossibleStates(newState):
                             newBoard[i][j] = newBoard[i-1][j]
                             newBoard[i-2][j] = ' '
                         nextState = State(newBoard, -50, newState.doorColumn, newState)
-                        nextState.hn = computeHeuristicOne(nextState)
+                        # nextState.hn = computeHeuristicOne(nextState)
+                        nextState.hn = computeHeuristicTwo(nextState)
                         nextState.fn = nextState.gn + nextState.hn
                         if(hashState(nextState) != False):
                             listOfPossibleStates.append(nextState)
@@ -88,7 +91,8 @@ def findPossibleStates(newState):
                             newBoard[i][j] = newBoard[i+1][j]
                             newBoard[i+2][j] = ' '
                         nextState = State(newBoard, -50, newState.doorColumn, newState)
-                        nextState.hn = computeHeuristicOne(nextState)
+                        # nextState.hn = computeHeuristicOne(nextState)
+                        nextState.hn = computeHeuristicTwo(nextState)
                         nextState.fn = nextState.gn + nextState.hn
                         if(hashState(nextState) != False):
                             listOfPossibleStates.append(nextState)
@@ -117,6 +121,72 @@ def computeHeuristicOne(newState):
             blockingCarCount = blockingCarCount + 1
     return blockingCarCount 
             
+
+
+
+###############################################################################
+#
+#
+###############################################################################
+def computeHeuristicTwo(newState):
+    blockingCarCount = 0
+    spaceFromExit = 0
+    for i in range(0,newState.numColumns):
+        #If we reach the red car going down       
+        if(newState.board[i][newState.doorColumn] == 'R'):
+            break
+        #If we reach a non-empty space in front of red car, i.e. a car or truck
+        elif(newState.board[i][newState.doorColumn] != ' '):
+            #If the red car is in the last column and cars will be blocked on right side
+            if(newState.doorColumn == newState.numColumns - 1):
+                #Start from the right and see if there is a car blocking the blocking car
+                for j in range(newState.doorColumn -1, 0, -1):
+                    #If there is no car to the left of the blocking car
+                    if(newState.board[i][j] == ' '):
+                        blockingCarCount = blockingCarCount + 1
+                        break
+                    #If there is a car to the left of the blocking car
+                    elif(newState.board[i][j] != newState.board[i][j+1]):
+                        blockingCarCount = blockingCarCount + 2
+                        break
+            #If the red car is in the first column and cars will be blocked on the left
+            elif(newState.doorColumn == 0):
+                #Start from the right and see if there is a car blocking the blocking car
+                for j in range(0, newState.doorColumn -1):
+                    #If there is no car to the left of the blocking car
+                    if(newState.board[i][j] == ' '):
+                        blockingCarCount = blockingCarCount + 1
+                        break
+                    #If there is a car to the left of the blocking car
+                    elif(newState.board[i][j] != newState.board[i][j-1]):
+                        blockingCarCount = blockingCarCount + 2
+                        break
+            else:
+                #Start from the current column and check both forward and backward
+                for j in range(0, newState.doorColumn):
+                    #If there is no car to either the left or right of the blocking car
+                    if(newState.board[i][j] == ' ' or newState.board[i][-j] == ' '):
+                        blockingCarCount = blockingCarCount + 1
+                        break
+                    #If there is a car to either the left or right of the blocking car
+                    elif(newState.board[i][j] != newState.board[i][j-1] or newState.board[i][-j] != newState.board[i][-j + 1]):
+                        blockingCarCount = blockingCarCount + 2
+                        break
+
+    #Add the number of blank spaces between the red car and the exit
+    for i in range(0,newState.numColumns):       
+        if(newState.board[i][newState.doorColumn] == 'R'):
+            break
+        # elif(newState.board[i][newState.doorColumn] == ' '):
+        #     spaceFromExit = spaceFromExit + 1
+        else:
+            spaceFromExit = spaceFromExit + 1
+
+
+    return blockingCarCount + spaceFromExit
+
+
+
 
 
 ###############################################################################
@@ -158,7 +228,7 @@ def hashState(currentState):
         return(False)
     else:
         listOfVisitedStates.append(tempString)
-    print(tempString)
+    # print(tempString)
 
 
 def printPath(goalState):
@@ -170,6 +240,7 @@ def printPath(goalState):
 
     for x in reversed(path):
         print("-------------------------")
+        # print(computeHeuristicThree(x))
         x.printBoard()
         # print(x.board)
 
@@ -223,7 +294,7 @@ pq = PriorityQueue()
 
 statesTested = 0
 
-pq.add_state(stateB, 3)
+pq.add_state(stateC, 2)
 goalNotReached = False
 while (not goalNotReached):
     poppedState = pq.pop_state()
@@ -237,6 +308,11 @@ while (not goalNotReached):
     newList = findPossibleStates(poppedState)
     for x in newList:
         pq.add_state(x,x.fn)
+
+
+# print(computeHeuristicThree(stateA))
+# print(computeHeuristicThree(stateB))
+# print(computeHeuristicThree(stateC))
 
 
 
