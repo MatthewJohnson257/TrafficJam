@@ -6,6 +6,7 @@
 ###############################################################################
 import copy
 from state import State
+from PriorityQueue import PriorityQueue
 
 
 
@@ -93,11 +94,11 @@ def findPossibleStates(newState):
                             listOfPossibleStates.append(nextState)
 
     
-    for x in listOfPossibleStates:
-        print("-----------------------")
-        print("length: ", len(listOfPossibleStates))
-        x.printBoard()
-        print("-----------------------")
+    # for x in listOfPossibleStates:
+    #     print("-----------------------")
+    #     print("length: ", len(listOfPossibleStates))
+    #     x.printBoard()
+    #     print("-----------------------")
 
     return(listOfPossibleStates)
 
@@ -142,17 +143,35 @@ def hashState(currentState):
     for i in range(0, len(tempBoard)):
         for j in range(0, len(tempBoard[0])):
             tempString = tempString + tempBoard[i][j]
+    tempString2 = copy.deepcopy(tempString)
     tempString = tempString + str(currentState.fn)
+    tempString2 = tempString2 + str(currentState.fn - 2)
     tempString = tempString + str(currentState.gn)
+    tempString2 = tempString2 + str(currentState.gn - 2)
     tempString = tempString + str(currentState.hn)
+    tempString2 = tempString2 + str(currentState.hn)
     tempString = tempString + '.'
+    tempString2 = tempString2 + '.'
 
-    if (tempString in listOfVisitedStates):
-        print("Already Visited")
+    if (tempString in listOfVisitedStates or tempString2 in listOfVisitedStates):
+        #print("Already Visited")
         return(False)
     else:
         listOfVisitedStates.append(tempString)
     print(tempString)
+
+
+def printPath(goalState):
+    path = [goalState]
+    tempState = goalState
+    while(tempState.parentState != None):
+        path.append(tempState.parentState)
+        tempState = tempState.parentState
+
+    for x in reversed(path):
+        print("-------------------------")
+        x.printBoard()
+        # print(x.board)
 
 
 
@@ -195,9 +214,29 @@ listOfVisitedStates = []
 #print(computeHeuristicOne(stateB))
 #print(computeHeuristicOne(stateC))
 
-listyList = findPossibleStates(stateA)
-for x in listyList:
-    findPossibleStates(x)
+# listyList = findPossibleStates(stateA)
+# for x in listyList:
+#     findPossibleStates(x)
+#     pq.add_state(stateA, 5)
+
+pq = PriorityQueue()
+
+statesTested = 0
+
+pq.add_state(stateB, 3)
+goalNotReached = False
+while (not goalNotReached):
+    poppedState = pq.pop_state()
+    statesTested = statesTested + 1
+    goalNotReached = checkGoalTest(poppedState)
+    if(goalNotReached):
+        print("Total path cost: ",poppedState.fn)
+        printPath(poppedState)
+        print("Number of states tested: ",statesTested)
+        break
+    newList = findPossibleStates(poppedState)
+    for x in newList:
+        pq.add_state(x,x.fn)
 
 
 

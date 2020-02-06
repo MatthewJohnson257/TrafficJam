@@ -17,9 +17,12 @@ class PriorityQueue():
     def add_state(self, state, priority=0):
         'Add a new state or update the priority of an existing state'
         if state in self.entry_finder:
+            print("Here")
             if(state.fn <= priority):
+                print("AHHHHHH")
                 return
-            remove_state(state)
+            print("OHHHHHH")
+            self.remove_state(state)
         count = next(self.counter)
         entry = [priority, count, state]
         self.entry_finder[state] = entry
