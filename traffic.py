@@ -5,6 +5,7 @@
 #
 ###############################################################################
 import copy
+import argparse
 from state import State
 from PriorityQueue import PriorityQueue
 
@@ -310,86 +311,5 @@ while (not goalNotReached):
         pq.add_state(x,x.fn)
 
 
-# print(computeHeuristicThree(stateA))
-# print(computeHeuristicThree(stateB))
-# print(computeHeuristicThree(stateC))
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-####### Logic Order ########
-# 1. Pop from frontier, which is priority queue
-# 2. Discover valid move(s) for a car
-# 3. Check if that state has already been visited (hashing)
-# 4. If not, calculate A* heuristic stuff
-# 5. Add to frontier, which is a priority queue
-# 
-
-###### Need to figure out ########
-# 1. How to store path
-# 2. How to check if a move is valid
-# 3. Create object for state
-
-####### Needed for state object ######
-# 1. 2d array of char
-# 2. column of door
-# 3. heuristic f(n)
-
-####### TO DO LIST #######
-# 1. Keep track of path
-# 2. Dictionary for visited nodes
-# 3. Correct implementation of total heuristic (need g(n) part)
-#    - gn is an instance variable in state - implement its functionality
-# 4. Goal testing
-#    - if red car is at index [0][doorColumn]
-# 5. Keeping track of door column for realsies  (Edit: COMPLETE! I think)
-# 6. Keep track of final path length
-# 7. Keep track of number of states visited
