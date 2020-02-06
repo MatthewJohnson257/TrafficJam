@@ -1,34 +1,43 @@
-# Traffic
+###############################################################################
+#
+# traffic.py
+#
+#
+###############################################################################
 import copy
 from state import State
 
 
-initialStateA = [[' ', ' ', ' ', 'A', 'B', 'B'],
-                 [' ', ' ', ' ', 'A', 'C', 'C'],
-                 ['D', 'E', 'E', 'E', 'F', 'F'],
-                 ['D', ' ', ' ', ' ', ' ', 'R'],
-                 [' ', ' ', 'G', 'G', 'G', 'R'],
-                 [' ', ' ', ' ', ' ', ' ', ' ']]
+# initialStateA = [[' ', ' ', ' ', 'A', 'B', 'B'],
+#                  [' ', ' ', ' ', 'A', 'C', 'C'],
+#                  ['D', 'E', 'E', 'E', 'F', 'F'],
+#                  ['D', ' ', ' ', ' ', ' ', 'R'],
+#                  [' ', ' ', 'G', 'G', 'G', 'R'],
+#                  [' ', ' ', ' ', ' ', ' ', ' ']]
 
-initialStateB = [['A', 'B', 'C', 'D', 'D', 'D'],
-                 ['A', 'B', 'C', 'E', 'E', 'E'],
-                 ['A', 'B', 'F', 'F', 'G', 'G'],
-                 ['H', 'H', ' ', ' ', 'R', ' '],
-                 [' ', ' ', ' ', ' ', 'R', ' '],
-                 [' ', ' ', 'I', 'I', ' ', ' ']]
+# initialStateB = [['A', 'B', 'C', 'D', 'D', 'D'],
+#                  ['A', 'B', 'C', 'E', 'E', 'E'],
+#                  ['A', 'B', 'F', 'F', 'G', 'G'],
+#                  ['H', 'H', ' ', ' ', 'R', ' '],
+#                  [' ', ' ', ' ', ' ', 'R', ' '],
+#                  [' ', ' ', 'I', 'I', ' ', ' ']]
 
-initialStateC = [[' ', ' ', 'A', 'B', 'B', 'B'],
-                 [' ', ' ', 'A', 'C', 'D', 'D'],
-                 [' ', 'E', 'A', 'C', ' ', 'R'],
-                 ['G', 'E', 'F', 'F', 'F', 'R'],
-                 ['G', 'E', ' ', 'H', 'H', 'H'],
-                 ['G', ' ', ' ', ' ', ' ', ' ']]
+# initialStateC = [[' ', ' ', 'A', 'B', 'B', 'B'],
+#                  [' ', ' ', 'A', 'C', 'D', 'D'],
+#                  [' ', 'E', 'A', 'C', ' ', 'R'],
+#                  ['G', 'E', 'F', 'F', 'F', 'R'],
+#                  ['G', 'E', ' ', 'H', 'H', 'H'],
+#                  ['G', ' ', ' ', ' ', ' ', ' ']]
 
-stateA = State(initialStateA, -1, 5, None)
-stateB = State(initialStateB, -1, 4, None)
-stateC = State(initialStateC, -1, 5, None)
+# stateA = State(initialStateA, -1, 5, None)
+# stateB = State(initialStateB, -1, 4, None)
+# stateC = State(initialStateC, -1, 5, None)
 
 
+###############################################################################
+#
+#
+###############################################################################
 def findPossibleStates(newState):
     currentBoard = copy.deepcopy(newState.board)
     listOfPossibleStates = []
@@ -107,7 +116,10 @@ def findPossibleStates(newState):
 
 
     
-
+###############################################################################
+#
+#
+###############################################################################
 def computeHeuristicOne(newState):
     blockingCarCount = 0
     for i in range(0,newState.numColumns):       
@@ -118,14 +130,77 @@ def computeHeuristicOne(newState):
     return blockingCarCount 
             
 
+
+###############################################################################
+#
+#
+###############################################################################
+def checkGoalTest(currentState):
+    if(currentState.board[0][currentState.doorColumn] == 'R'):
+        return(True)
+    else:
+        return(False)
+
+
+
+
+###############################################################################
+#
+#
+###############################################################################
+def hashState(currentState):
+    tempBoard = copy.deepcopy(currentState.board)
+    print(tempBoard)
+    tempString = ""
+    for i in range(0, len(tempBoard)):
+        for j in range(0, len(tempBoard[0])):
+            tempString = tempString + tempBoard[i][j]
+    tempString = tempString + '.'
+    print(tempString)
+
+
+
+
+
+###############################################################################
+#                                                                             #
+#                                Global Scope                                 #
+#                                                                             #
+###############################################################################
+
+
+initialStateA = [[' ', ' ', ' ', 'A', 'B', 'B'],
+                 [' ', ' ', ' ', 'A', 'C', 'C'],
+                 ['D', 'E', 'E', 'E', 'F', 'F'],
+                 ['D', ' ', ' ', ' ', ' ', 'R'],
+                 [' ', ' ', 'G', 'G', 'G', 'R'],
+                 [' ', ' ', ' ', ' ', ' ', ' ']]
+
+initialStateB = [['A', 'B', 'C', 'D', 'D', 'D'],
+                 ['A', 'B', 'C', 'E', 'E', 'E'],
+                 ['A', 'B', 'F', 'F', 'G', 'G'],
+                 ['H', 'H', ' ', ' ', 'R', ' '],
+                 [' ', ' ', ' ', ' ', 'R', ' '],
+                 [' ', ' ', 'I', 'I', ' ', ' ']]
+
+initialStateC = [[' ', ' ', 'A', 'B', 'B', 'B'],
+                 [' ', ' ', 'A', 'C', 'D', 'D'],
+                 [' ', 'E', 'A', 'C', ' ', 'R'],
+                 ['G', 'E', 'F', 'F', 'F', 'R'],
+                 ['G', 'E', ' ', 'H', 'H', 'H'],
+                 ['G', ' ', ' ', ' ', ' ', ' ']]
+
+stateA = State(initialStateA, -1, 5, None)
+stateB = State(initialStateB, -1, 4, None)
+stateC = State(initialStateC, -1, 5, None)
+
 #print(computeHeuristicOne(stateA))
 #print(computeHeuristicOne(stateB))
 #print(computeHeuristicOne(stateC))
 
 findPossibleStates(stateC)
 
-
-
+hashState(stateC)
 
 
 
