@@ -32,7 +32,9 @@ class PriorityQueue():
         entry = self.entry_finder.pop(state)
         entry[-1] = self.REMOVED
 
+
     def hashState(self, currentState):
+        # used to verify if a state has already been in the priority queue
         tempBoard = copy.deepcopy(currentState.board)
         tempString = ""
         for i in range(0, len(tempBoard)):
@@ -45,6 +47,7 @@ class PriorityQueue():
         else:
             self.listOfVisited.append(tempString)
             return(True)
+
 
     def pop_state(self):
         #Remove and return the lowest priority state. Raise KeyError if empty.

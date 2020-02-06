@@ -15,7 +15,7 @@ from PriorityQueue import PriorityQueue
 ###############################################################################
 # Given a state object, search for all possible states reachable from that 
 # state through a single action.  Filter out states that have been visited
-# before, then return a list of the reachable states.
+# before, then return a list of the newly reachable states.
 ###############################################################################
 def findPossibleStates(newState):
     currentBoard = copy.deepcopy(newState.board)
@@ -212,8 +212,8 @@ def computeHeuristicTwo(newState):
 
 
 ###############################################################################
-#
-#
+# Given a state, return a bool of whether or not it satisfies the goal test,
+# that the red car is at the exit
 ###############################################################################
 def checkGoalTest(currentState):
     if(currentState.board[0][currentState.doorColumn] == 'R'):
@@ -225,36 +225,41 @@ def checkGoalTest(currentState):
 
 
 ###############################################################################
-#
-#
+# Takes a State object, and concatenizes the 2d array of char which represents
+# the board into a single string.  The method returns false if this State
+# has already been visited, or adds the string to a list of now visited States
 ###############################################################################
 def hashState(currentState):
     tempBoard = copy.deepcopy(currentState.board)
-    # print(tempBoard)
     tempString = ""
     for i in range(0, len(tempBoard)):
         for j in range(0, len(tempBoard[0])):
             tempString = tempString + tempBoard[i][j]
-    tempString2 = copy.deepcopy(tempString)
+
+    # parentString is used to make sure we do not add an already visited
+    # parent State to the priority queue
+    parentString = copy.deepcopy(tempString)
+
+    # also concatenize the f(n), g(n), and h(n) values
     tempString = tempString + str(currentState.fn)
-    tempString2 = tempString2 + str(currentState.fn - 2)
+    parentString = parentString + str(currentState.fn - 2)
     tempString = tempString + str(currentState.gn)
-    tempString2 = tempString2 + str(currentState.gn - 2)
+    parentString = parentString + str(currentState.gn - 2)
     tempString = tempString + str(currentState.hn)
-    tempString2 = tempString2 + str(currentState.hn)
+    parentString = parentString + str(currentState.hn)
     tempString = tempString + '.'
-    tempString2 = tempString2 + '.'
+    parentString = parentString + '.'
 
     # if the state has already been visited
-    if (tempString in listOfVisitedStates or tempString2 in listOfVisitedStates):
+    if (tempString in listOfVisitedStates or parentString in listOfVisitedStates):
         return(False)
     else:
         listOfVisitedStates.append(tempString)
 
 
 ###############################################################################
-#
-#
+# Given a goal State, this will retrace the path taken to get from the inital
+# State to the goal and print out these states
 ###############################################################################
 def printPath(goalState):
     path = [goalState]
@@ -265,9 +270,10 @@ def printPath(goalState):
 
     for x in reversed(path):
         print("-------------------------")
-        # print(computeHeuristicThree(x))
         x.printBoard()
-        # print(x.board)
+
+
+
 
 
 
@@ -277,10 +283,12 @@ def printPath(goalState):
 #                                                                             #
 ###############################################################################
 
+# command line argument parsing
 parser = argparse.ArgumentParser()
 parser.add_argument('Arguments', metavar='N', type=int, nargs='+')
 arguments = parser.parse_args()
 
+# error messages
 if(len(arguments.Arguments) != 2):
     sys.exit("    Error: Incorrect number of command line arguments supplied; 2 needed")
 if(arguments.Arguments[0] < 1 or arguments.Arguments[0] > 3):
@@ -288,10 +296,11 @@ if(arguments.Arguments[0] < 1 or arguments.Arguments[0] > 3):
 if(arguments.Arguments[1] < 1 or arguments.Arguments[1] > 2):
     sys.exit("    Error: Invalid value for second command line argument; must be in range(1,2)")
 
-usedPuzzle = arguments.Arguments[0]
-usedHeuristic = arguments.Arguments[1]
+usedPuzzle = arguments.Arguments[0]             # which given puzzle to solve
+usedHeuristic = arguments.Arguments[1]          # which heuristic strategy to use
 
 
+# hardcoded initial states
 
 initialStateA = [[' ', ' ', ' ', 'A', 'B', 'B'],
                  [' ', ' ', ' ', 'A', 'C', 'C'],
@@ -318,14 +327,14 @@ stateA = State(initialStateA, 3, 5, None)
 stateB = State(initialStateB, 3, 4, None)
 stateC = State(initialStateC, 2, 5, None)
 
-listOfVisitedStates = []
+listOfVisitedStates = []    # tracks all the states that have already been visited
 
-pq = PriorityQueue()
+pq = PriorityQueue()        # A* frontier, implemented as priority queue
 
-statesTested = 0
+statesTested = 0            # total number of states goal tested
 
 
-
+# determine which initial puzzle to solve
 if(usedPuzzle == 1):
     pq.add_state(stateA, 3)
 elif(usedPuzzle == 2):
@@ -333,16 +342,23 @@ elif(usedPuzzle == 2):
 elif(usedPuzzle == 3):
     pq.add_state(stateC, 2)
 
+
+
 goalNotReached = False
+
+# run A* search until goal state is discovered 
 while (not goalNotReached):
     poppedState = pq.pop_state()
     statesTested = statesTested + 1
     goalNotReached = checkGoalTest(poppedState)
+
     if(goalNotReached):
         printPath(poppedState)
         print("Total path cost: ",poppedState.fn)
         print("Number of states tested: ",statesTested)
         break
+
+    # find new reachable states, add them to the frontier
     newList = findPossibleStates(poppedState)
     for x in newList:
         pq.add_state(x,x.fn)
